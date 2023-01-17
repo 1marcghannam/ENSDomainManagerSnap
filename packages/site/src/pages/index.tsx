@@ -1,5 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
@@ -11,9 +12,31 @@ import {
   ConnectButton,
   InstallFlaskButton,
   ReconnectButton,
-  SendHelloButton,
+  AddOrRemoveButton,
   Card,
 } from '../components';
+
+import {
+  getContract,
+  getExpirationDate,
+  getTokenId,
+  getOwner,
+  ENS_CONTRACT_ADDRESS,
+} from '../ens';
+
+import ContractABI from '../ens/ContractABI.json';
+
+const contract = getContract(ENS_CONTRACT_ADDRESS, ContractABI);
+const tokenId = BigInt(getTokenId('lastre'));
+const owner = getOwner(tokenId, contract).then((res) => {
+  console.log('owner', res);
+});
+console.log('tokenId', tokenId);
+const expirationDate = getExpirationDate(tokenId, contract).then((res) => {
+  console.log('res', ethers.utils.formatUnits(res, 0));
+});
+
+console.log('expirationDate', expirationDate);
 
 const Container = styled.div`
   display: flex;
@@ -101,6 +124,7 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
+  const [ensDomain, setEnsDomain] = useState('');
 
   const handleConnectClick = async () => {
     try {
@@ -117,7 +141,7 @@ const Index = () => {
     }
   };
 
-  const handleSendHelloClick = async () => {
+  const handleAddOrRemoveClick = async () => {
     try {
       await sendHello();
     } catch (e) {
@@ -129,10 +153,10 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        <Span>ENS Domain Manager</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+        Create notification alers for your ENS domains. <br />
       </Subtitle>
       <CardContainer>
         {state.error && (
@@ -181,35 +205,37 @@ const Index = () => {
               ),
             }}
             disabled={!state.installedSnap}
+            fullWidth={true}
           />
         )}
         <Card
           content={{
-            title: 'Send Hello message',
+            title: 'Add ENS Domain Name',
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+              'Create a MetaMask notification to remind about the expiration of your ENS Domain Names.',
             button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
+              <AddOrRemoveButton
+                onClick={handleAddOrRemoveClick}
                 disabled={!state.installedSnap}
+              />
+            ),
+            input: (
+              <input
+                type="text"
+                placeholder="Enter your ENS Domain Name"
+                style={{
+                  marginTop: '1.4rem',
+                  marginBottom: '4.4rem',
+                  paddingTop: '1rem',
+                  paddingBottom: '1rem',
+                  paddingLeft: '1.6rem',
+                }}
               />
             ),
           }}
           disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
+          fullWidth={true}
         />
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
       </CardContainer>
     </Container>
   );

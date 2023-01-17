@@ -1,5 +1,4 @@
 import { OnRpcRequestHandler } from '@metamask/snap-types';
-
 /**
  * Get a message from the origin. For demonstration purposes only.
  *
@@ -8,6 +7,8 @@ import { OnRpcRequestHandler } from '@metamask/snap-types';
  */
 export const getMessage = (originString: string): string =>
   `Hello, ${originString}!`;
+
+// console.log('TEST, expir ation: ', expiration);
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -28,8 +29,7 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
         params: [
           {
             prompt: getMessage(origin),
-            description:
-              'This custom confirmation is just for display purposes.',
+            description: '123',
             textAreaContent:
               'But you can edit the snap source code to make it do something, if you want to!',
           },
