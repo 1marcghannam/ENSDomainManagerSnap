@@ -1,12 +1,11 @@
+import ContractABI from './ContractABI.json';
 import {
   getContract,
   getExpirationDate,
   getTokenId,
   getOwner,
   ENS_CONTRACT_ADDRESS,
-} from '../ens';
-
-import ContractABI from '../ens/ContractABI.json';
+} from '.';
 
 export type DomainRecord = {
   owner: string;
@@ -24,7 +23,7 @@ export const getDomainRecord = async (
     return { owner, expirationDate };
   } catch (error: any) {
     throw new Error(
-      `Error getting the domain record. Reason: ${error.message}`,
+      `Error getting the domain record. Please make sure that you're storing a valid ENS Domain.`,
     );
   }
 };

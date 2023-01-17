@@ -8,9 +8,7 @@ export const getContract = async (
   contractAbi: any,
 ) => {
   try {
-    const provider = new ethers.providers.JsonRpcProvider(
-      'https://eth-rpc.gateway.pokt.network/',
-    );
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
     return new ethers.Contract(contractAddress, contractAbi, provider);
   } catch (error: any) {
     throw new Error(`Error initiating the contract. Reason: ${error.message}`);

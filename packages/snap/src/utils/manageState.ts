@@ -17,19 +17,17 @@ export const getPersistedData = async (): Promise<Partial<PersistedData>> => {
   }
 };
 
-export const setPersistedData = async (
+export const addDomainToPersistedData = async (
   ENSDomain: string,
   owner: string,
-  notificationPeriod: number,
   expirationDate: number,
+  persistedData: Partial<PersistedData>,
 ): Promise<void> => {
   try {
-    const persistedData = await getPersistedData();
     const newPersistedData = {
       ...persistedData,
       [ENSDomain]: {
         owner,
-        notificationPeriod,
         expirationDate,
       },
     };
@@ -39,7 +37,24 @@ export const setPersistedData = async (
     });
   } catch (error: any) {
     throw new Error(
-      `Error setting the persisted data. Reason: ${error.message}`,
+      `Error adding domain to the persisted data. Reason: ${error.message}`,
+    );
+  }
+};
+
+export const removeDomainFromPersistedData = async (
+  ENSDomain: string,
+  persistedData: Partial<PersistedData>,
+): Promise<void> => {
+  try {
+    delete persistedData[ENSDomain];
+    await wallet.request({
+      method: 'snap_manageState',
+      params: ['update', persistedData],
+    });
+  } catch (error: any) {
+    throw new Error(
+      `Error removing domain from the persisted data. Reason: ${error.message}`,
     );
   }
 };

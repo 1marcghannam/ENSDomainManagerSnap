@@ -1,42 +1,40 @@
 import { OnRpcRequestHandler } from '@metamask/snap-types';
-/**
- * Get a message from the origin. For demonstration purposes only.
- *
- * @param originString - The origin string.
- * @returns A message based on the origin.
- */
-export const getMessage = (originString: string): string =>
-  `Hello, ${originString}!`;
+import { RequestENSDomainRecord, PersistedData } from './types';
+import {
+  getPersistedData,
+  addDomainToPersistedData,
+  removeDomainFromPersistedData,
+  getMessage,
+} from './utils';
 
-// console.log('TEST, expir ation: ', expiration);
-
-/**
- * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
- *
- * @param args - The request handler args as object.
- * @param args.origin - The origin of the request, e.g., the website that
- * invoked the snap.
- * @param args.request - A validated JSON-RPC request object.
- * @returns `null` if the request succeeded.
- * @throws If the request method is not valid for this snap.
- * @throws If the `snap_confirm` call failed.
- */
-
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
-  console.log('ens', request?.params?.ensDomain);
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
-    case 'addOrRemoveENSDomain':
-      return wallet.request({
+    case 'addOrRemoveENSDomain': {
+      const requestENSDomainRecord: RequestENSDomainRecord = request.params;
+      const persistedData = (await getPersistedData()) as PersistedData;
+      const isStored = requestENSDomainRecord.ensDomain in persistedData;
+      const message = getMessage(requestENSDomainRecord.ensDomain, isStored);
+      const isApproved = await wallet.request({
         method: 'snap_confirm',
-        params: [
-          {
-            prompt: getMessage(origin),
-            description: '123',
-            textAreaContent:
-              'But you can edit the snap source code to make it do something, if you want to!',
-          },
-        ],
+        params: [message],
       });
+      if (isApproved) {
+        if (isStored) {
+          await removeDomainFromPersistedData(
+            requestENSDomainRecord.ensDomain,
+            persistedData,
+          );
+        } else {
+          await addDomainToPersistedData(
+            requestENSDomainRecord.ensDomain,
+            requestENSDomainRecord.owner,
+            requestENSDomainRecord.expirationDate,
+            persistedData,
+          );
+        }
+      }
+      break;
+    }
     default:
       throw new Error('Method not found.');
   }

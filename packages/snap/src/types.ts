@@ -3,11 +3,20 @@ export type PersistedData = {
 };
 
 export type ENSDomain = {
-  owner: string;
   expirationDate: number;
   notificationPeriod: number;
 };
 
-export type Contract = {
-  nameExpires: (tokenId: number) => Promise<number>;
+export type RequestENSDomainRecord =
+  | {
+      owner?: string;
+      expirationDate?: number;
+      ensDomain?: string;
+    }
+  | any;
+
+export type PromptMessage = {
+  prompt: string;
+  description: string;
+  textAreaContent: string;
 };

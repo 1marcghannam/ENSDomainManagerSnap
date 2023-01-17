@@ -6,7 +6,6 @@ import {
   getSnap,
   addOrRemoveENSDomain,
   shouldDisplayReconnectButton,
-  getDomainRecord,
 } from '../utils';
 import {
   ConnectButton,
@@ -15,6 +14,7 @@ import {
   AddOrRemoveButton,
   Card,
 } from '../components';
+import { getDomainRecord } from '../ens';
 
 const Container = styled.div`
   display: flex;
