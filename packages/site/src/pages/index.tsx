@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
   getSnap,
-  sendHello,
+  addOrRemoveENSDomain,
   shouldDisplayReconnectButton,
+  getDomainRecord,
 } from '../utils';
 import {
   ConnectButton,
@@ -15,28 +15,6 @@ import {
   AddOrRemoveButton,
   Card,
 } from '../components';
-
-import {
-  getContract,
-  getExpirationDate,
-  getTokenId,
-  getOwner,
-  ENS_CONTRACT_ADDRESS,
-} from '../ens';
-
-import ContractABI from '../ens/ContractABI.json';
-
-const contract = getContract(ENS_CONTRACT_ADDRESS, ContractABI);
-const tokenId = BigInt(getTokenId('lastre'));
-const owner = getOwner(tokenId, contract).then((res) => {
-  console.log('owner', res);
-});
-console.log('tokenId', tokenId);
-const expirationDate = getExpirationDate(tokenId, contract).then((res) => {
-  console.log('res', ethers.utils.formatUnits(res, 0));
-});
-
-console.log('expirationDate', expirationDate);
 
 const Container = styled.div`
   display: flex;
@@ -85,25 +63,6 @@ const CardContainer = styled.div`
   margin-top: 1.5rem;
 `;
 
-const Notice = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.alternative};
-  border: 1px solid ${({ theme }) => theme.colors.border.default};
-  color: ${({ theme }) => theme.colors.text.alternative};
-  border-radius: ${({ theme }) => theme.radii.default};
-  padding: 2.4rem;
-  margin-top: 2.4rem;
-  max-width: 60rem;
-  width: 100%;
-
-  & > * {
-    margin: 0;
-  }
-  ${({ theme }) => theme.mediaQueries.small} {
-    margin-top: 1.2rem;
-    padding: 1.6rem;
-  }
-`;
-
 const ErrorMessage = styled.div`
   background-color: ${({ theme }) => theme.colors.error.muted};
   border: 1px solid ${({ theme }) => theme.colors.error.default};
@@ -143,7 +102,9 @@ const Index = () => {
 
   const handleAddOrRemoveClick = async () => {
     try {
-      await sendHello();
+      const domainRecord = await getDomainRecord(ensDomain);
+      const { owner, expirationDate } = domainRecord;
+      await addOrRemoveENSDomain(ensDomain, owner, expirationDate);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -180,7 +141,7 @@ const Index = () => {
             content={{
               title: 'Connect',
               description:
-                'Get started by connecting to and installing the example snap.',
+                'Get started by connecting to and installing the snap.',
               button: (
                 <ConnectButton
                   onClick={handleConnectClick}
@@ -189,6 +150,7 @@ const Index = () => {
               ),
             }}
             disabled={!state.isFlask}
+            fullWidth={true}
           />
         )}
         {shouldDisplayReconnectButton(state.installedSnap) && (
@@ -223,6 +185,8 @@ const Index = () => {
               <input
                 type="text"
                 placeholder="Enter your ENS Domain Name"
+                value={ensDomain}
+                onChange={(e) => setEnsDomain(e.target.value)}
                 style={{
                   marginTop: '1.4rem',
                   marginBottom: '4.4rem',

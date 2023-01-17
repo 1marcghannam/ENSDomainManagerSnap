@@ -21,9 +21,11 @@ export const getMessage = (originString: string): string =>
  * @throws If the request method is not valid for this snap.
  * @throws If the `snap_confirm` call failed.
  */
+
 export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+  console.log('ens', request?.params?.ensDomain);
   switch (request.method) {
-    case 'hello':
+    case 'addOrRemoveENSDomain':
       return wallet.request({
         method: 'snap_confirm',
         params: [
