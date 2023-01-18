@@ -1,84 +1,72 @@
-# @metamask/template-snap-monorepo
+# ENS Domain Manager Snap for MetaMask
 
-This repository demonstrates how to develop a snap with TypeScript. For detailed instructions, see [the MetaMask documentation](https://docs.metamask.io/guide/snaps.html#serving-a-snap-to-your-local-environment).
+## I. Introduction
 
-MetaMask Snaps is a system that allows anyone to safely expand the capabilities of MetaMask. A _snap_ is a program that we run in an isolated environment that can customize the wallet experience.
+This is a Snap for MetaMask that allows users to manage their ENS domains by adding or removing notifications for their expiration dates.
 
-## Snaps is pre-release software
+## II. Features
 
-To interact with (your) Snaps, you will need to install [MetaMask Flask](https://metamask.io/flask/), a canary distribution for developers that provides access to upcoming features.
+- Add or remove notifications for ENS domain expiration dates
+- Receive in-app notifications for expiring domains
+- Manage the list of domains with expiration date notifications
 
-## Getting Started
+## III. Pre-requisites
 
-Clone the template-snap repository [using this template](https://github.com/MetaMask/template-snap-monorepo/generate) and setup the development environment:
+- [MetaMask Flask](https://metamask.io/flask/) installed and connected to the Ethereum Mainnet
+- [Yarn](https://yarnpkg.com/) installed
 
-```shell
-yarn install && yarn start
+## IV. Technical Overview
+
+### 1. Snap
+
+The Snap is a Node.js application that runs in the background of MetaMask Flask. It is built using the [Snap development framework](https://docs.metamask.io/guide/snaps.html#extend-the-functionality-of-metamask)
+
+### 2. React App
+
+The React App is a web application that runs in the foreground of MetaMask Flask. It is built using [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
+
+## V. Local Setup
+
+### 1. Clone the repository
+
+```bash
+$ git clone https://github.com/1marcghannam/ENSDomainManagerSnap.git
 ```
 
-## Cloning
+### 2. Install dependencies
 
-This repository contains GitHub Actions that you may find useful, see `.github/workflows` and [Releasing & Publishing](https://github.com/MetaMask/template-snap-monorepo/edit/main/README.md#releasing--publishing) below for more information.
+```bash
+$ cd ENSDomainManagerSnap
+$ yarn install
+```
 
-If you clone or create this repository outside the MetaMask GitHub organization, you probably want to run `./scripts/cleanup.sh` to remove some files that will not work properly outside the MetaMask GitHub organization.
+### 3. Run the Snap
 
-Note that the `action-publish-relase.yml` workflow contains a step that publishes the frontend of this snap (contained in the `public/` directory) to GitHub pages. If you do not want to publish the frontend to GitHub pages, simply remove the step named "Publish to GitHub Pages" in that workflow.
+```bash
+$ yarn start
+```
 
-If you don't wish to use any of the existing GitHub actions in this repository, simply delete the `.github/workflows` directory.
+## VI. Using the Snap
 
-## Contributing
+### 1. Add the Snap
 
-### Testing and Linting
+- Once you have the Snap running locally, open the React App at http://localhost:8000 in your browser after connecting to the website with MetaMask Flask.
+- After connecting your MetaMask Flask account to the website, click on the prompted button "Approve & install".
+- You should see the Snap installed in your MetaMask Flask account if you go to: Settings > Snaps.
 
-Run `yarn test` to run the tests once.
+### 2. Add or Remove a domain
 
-Run `yarn lint` to run the linter, or run `yarn lint:fix` to run the linter and fix any automatically fixable issues.
+- Type in a domain name without the .eth extension and click on the "Add / Remove Notification" button. If the domain is not registered, you will be prompted an error on the website. If the domain is registered, you will be prompted to add a notification for its expiration date. Although if the domain is registered and you already have a notification for its expiration date, you will be prompted to remove the notification.
+- Once you have added a notification for a domain, you will be prompted with a notification in MetaMask Flask when the domain is about to expire (within 7 days of expiring).
+- There will be a cron job running in the background that checks for domain expiration dates every 24 hours. If a domain is about to expire, you will be prompted with a notification in MetaMask Flask.
 
-### Releasing & Publishing
+## VII. Testing
 
-The project follows the same release process as the other libraries in the MetaMask organization. The GitHub Actions [`action-create-release-pr`](https://github.com/MetaMask/action-create-release-pr) and [`action-publish-release`](https://github.com/MetaMask/action-publish-release) are used to automate the release process; see those repositories for more information about how they work.
+### 1. Run the tests
 
-1. Choose a release version.
+Run tests for the Snap `utils.ts` functions:
 
-- The release version should be chosen according to SemVer. Analyze the changes to see whether they include any breaking changes, new features, or deprecations, then choose the appropriate SemVer version. See [the SemVer specification](https://semver.org/) for more information.
-
-2. If this release is backporting changes onto a previous release, then ensure there is a major version branch for that version (e.g. `1.x` for a `v1` backport release).
-
-- The major version branch should be set to the most recent release with that major version. For example, when backporting a `v1.0.2` release, you'd want to ensure there was a `1.x` branch that was set to the `v1.0.1` tag.
-
-3. Trigger the [`workflow_dispatch`](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch) event [manually](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow) for the `Create Release Pull Request` action to create the release PR.
-
-- For a backport release, the base branch should be the major version branch that you ensured existed in step 2. For a normal release, the base branch should be the main branch for that repository (which should be the default value).
-- This should trigger the [`action-create-release-pr`](https://github.com/MetaMask/action-create-release-pr) workflow to create the release PR.
-
-4. Update the changelog to move each change entry into the appropriate change category ([See here](https://keepachangelog.com/en/1.0.0/#types) for the full list of change categories, and the correct ordering), and edit them to be more easily understood by users of the package.
-
-- Generally any changes that don't affect consumers of the package (e.g. lockfile changes or development environment changes) are omitted. Exceptions may be made for changes that might be of interest despite not having an effect upon the published package (e.g. major test improvements, security improvements, improved documentation, etc.).
-- Try to explain each change in terms that users of the package would understand (e.g. avoid referencing internal variables/concepts).
-- Consolidate related changes into one change entry if it makes it easier to explain.
-- Run `yarn auto-changelog validate --rc` to check that the changelog is correctly formatted.
-
-5. Review and QA the release.
-
-- If changes are made to the base branch, the release branch will need to be updated with these changes and review/QA will need to restart again. As such, it's probably best to avoid merging other PRs into the base branch while review is underway.
-
-6. Squash & Merge the release.
-
-- This should trigger the [`action-publish-release`](https://github.com/MetaMask/action-publish-release) workflow to tag the final release commit and publish the release on GitHub.
-
-7. Publish the release on npm.
-
-- Be very careful to use a clean local environment to publish the release, and follow exactly the same steps used during CI.
-- Use `npm publish --dry-run` to examine the release contents to ensure the correct files are included. Compare to previous releases if necessary (e.g. using `https://unpkg.com/browse/[package name]@[package version]/`).
-- Once you are confident the release contents are correct, publish the release using `npm publish`.
-
-## Notes
-
-- Babel is used for transpiling TypeScript to JavaScript, so when building with the CLI,
-  `transpilationMode` must be set to `localOnly` (default) or `localAndDeps`.
-- For the global `wallet` type to work, you have to add the following to your `tsconfig.json`:
-  ```json
-  {
-    "files": ["./node_modules/@metamask/snap-types/global.d.ts"]
-  }
-  ```
+```bash
+$ cd ./packages/snap
+$ yarn test
+```

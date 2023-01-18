@@ -57,7 +57,15 @@ export const getSnap = async (version?: string): Promise<Snap | undefined> => {
 };
 
 /**
- * Invoke the "hello" method from the example snap.
+ * addOrRemoveENSDomain is an async function that adds or removes an ENS domain.
+ * It takes the ENS domain, the owner and the expiration date as parameters.
+ * It uses the window.ethereum.request method to invoke the Snap function addOrRemoveENSDomain with the provided parameters.
+ * If the domain is added or removed successfully it doesn't return anything,
+ * otherwise it throws an error with a message that includes the reason of the error.
+ *
+ * @param {string} ensDomain - the ENS domain to add or remove.
+ * @param {string} owner - the owner of the ENS domain.
+ * @param {number} expirationDate - the expiration date of the ENS domain.
  */
 
 export const addOrRemoveENSDomain = async (

@@ -4,7 +4,6 @@ export type PersistedData = {
 
 export type ENSDomain = {
   expirationDate: number;
-  notificationPeriod: number;
 };
 
 export type RequestENSDomainRecord =
