@@ -36,7 +36,7 @@ $ git clone https://github.com/1marcghannam/ENSDomainManagerSnap.git
 ### 2. Install dependencies
 
 ```bash
-$ cd ENSDomainManagerSnap
+$ cd ./root
 $ yarn install
 ```
 
@@ -70,3 +70,11 @@ Run tests for the Snap `utils.ts` functions:
 $ cd ./packages/snap
 $ yarn test
 ```
+
+## VIII. TODOs / Improvements
+
+- Show a list of domains with expiration date notifications in the React App
+- Allow users to set custom expiration date notifications
+- Integrate with other blockchain domains, not only ENS (e.g. Bonfida Domains)
+- Add the ability to renew a domain in the React App
+- Add feature to automatically renew domains before they expire
