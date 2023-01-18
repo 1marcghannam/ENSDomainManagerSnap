@@ -14,7 +14,6 @@ import {
   AddOrRemoveButton,
   Card,
 } from '../components';
-import { getDomainRecord } from '../ens';
 
 const Container = styled.div`
   display: flex;
@@ -102,9 +101,7 @@ const Index = () => {
 
   const handleAddOrRemoveClick = async () => {
     try {
-      const domainRecord = await getDomainRecord(ensDomain);
-      const { owner, expirationDate } = domainRecord;
-      await addOrRemoveENSDomain(ensDomain, owner, expirationDate);
+      await addOrRemoveENSDomain(ensDomain);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });

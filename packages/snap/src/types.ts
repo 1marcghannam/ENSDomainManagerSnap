@@ -6,13 +6,7 @@ export type ENSDomain = {
   expirationDate: number;
 };
 
-export type RequestENSDomainRecord =
-  | {
-      owner?: string;
-      expirationDate?: number;
-      ensDomain?: string;
-    }
-  | any;
+export type ENSDomainName = string | any;
 
 export type PromptMessage = {
   prompt: string;

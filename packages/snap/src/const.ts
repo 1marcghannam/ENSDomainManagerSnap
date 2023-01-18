@@ -15,3 +15,9 @@ export const ONE_WEEK_IN_MILLISECONDS = ONE_DAY_IN_MILLISECONDS * 7;
  */
 
 export const MILLISECONDS_MULTIPLIER = 1000;
+
+/**
+ * The address of the ENS contract on Ethereum mainnet.
+ */
+export const ENS_CONTRACT_ADDRESS =
+  '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85';

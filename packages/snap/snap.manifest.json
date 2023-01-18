@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/template-snap-monorepo.git"
   },
   "source": {
-    "shasum": "FO0BpkJz58Em93G/Uu9fnOpUzPhCLwBwef4+ldzCs2o=",
+    "shasum": "U0pY4/4jU0z/o5t1vwngUayvZlAouF6ZAEudFeFcsH4=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -27,6 +27,13 @@
           "expression": "* * */1 * *",
           "request": {
             "method": "checkExpirationDate",
+            "params": {}
+          }
+        },
+        {
+          "expression": "* */1 * * *",
+          "request": {
+            "method": "updateExpirationDates",
             "params": {}
           }
         }

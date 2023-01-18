@@ -57,22 +57,13 @@ export const getSnap = async (version?: string): Promise<Snap | undefined> => {
 };
 
 /**
- * addOrRemoveENSDomain is an async function that adds or removes an ENS domain.
- * It takes the ENS domain, the owner and the expiration date as parameters.
- * It uses the window.ethereum.request method to invoke the Snap function addOrRemoveENSDomain with the provided parameters.
- * If the domain is added or removed successfully it doesn't return anything,
- * otherwise it throws an error with a message that includes the reason of the error.
+ * addOrRemoveENSDomain is a function that allows the user to add or remove ENS domains from the persisted data.
+ * It makes a request to the wallet to invoke the Snap with the 'addOrRemoveENSDomain' method and the ENS domain as parameter.
  *
- * @param {string} ensDomain - the ENS domain to add or remove.
- * @param {string} owner - the owner of the ENS domain.
- * @param {number} expirationDate - the expiration date of the ENS domain.
+ * @param {string} ensDomain - The ENS domain that the user wants to add or remove.
  */
 
-export const addOrRemoveENSDomain = async (
-  ensDomain: string,
-  owner: string,
-  expirationDate: number,
-) => {
+export const addOrRemoveENSDomain = async (ensDomain: string) => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: [
@@ -81,8 +72,6 @@ export const addOrRemoveENSDomain = async (
         method: 'addOrRemoveENSDomain',
         params: {
           ensDomain,
-          owner,
-          expirationDate,
         },
       },
     ],

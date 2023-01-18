@@ -9,6 +9,7 @@ This is a Snap for MetaMask that allows users to manage their ENS domains by add
 - Add or remove notifications for ENS domain expiration dates
 - Receive in-app notifications for expiring domains
 - Manage the list of domains with expiration date notifications
+- Automatically updates expiration dates every hour if domains are renewed
 
 ## III. Pre-requisites
 

@@ -1,6 +1,7 @@
 import {
   getExpiringDomains,
   getMessageExpiringDomainNotification,
+  getTokenId,
 } from '../../src/utils';
 
 import {
@@ -34,5 +35,14 @@ describe('getMessageExpiringDomainNotification', () => {
     expect(
       getMessageExpiringDomainNotification(ENSDomain, expirationDate),
     ).toStrictEqual(expectedMessage);
+  });
+});
+
+describe('getTokenId', () => {
+  it('should return the correct token ID for a given domain', () => {
+    const domain = 'vitalik';
+    const expectedTokenId =
+      79233663829379634837589865448569342784712482819484549289560981379859480642508n;
+    expect(getTokenId(domain)).toStrictEqual(expectedTokenId);
   });
 });
